@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Step 1: Redirect uppercase /Workia/ to lowercase /workia/
+    RewriteCond %{REQUEST_URI} ^/Workia(.*)$
+    RewriteRule ^ /workia%1 [R=301,L,NE]
+
+    # Step 2: Redirect /workia root (no /public) to /workia/public/
+    RewriteCond %{REQUEST_URI} !^/workia/public
+    RewriteRule ^ /workia/public/ [R=301,L]
+</IfModule>
