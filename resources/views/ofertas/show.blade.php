@@ -1,8 +1,17 @@
 @extends('layouts.app')
 @section('title', $oferta->titulo)
+@section('styles')
+<style>
+@media(max-width:768px){
+    .offer-layout { grid-template-columns:1fr !important; }
+    .offer-layout > div[style*="sticky"] { position:static !important; }
+    .offer-layout .card { margin-bottom:1rem; }
+}
+</style>
+@endsection
 @section('content')
 <div class="container" style="padding-top:2rem;padding-bottom:3rem">
-    <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start">
+    <div class="offer-layout" style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start">
         <div>
             <a href="{{ route('ofertas.index') }}" style="color:#6b7280;font-size:.875rem;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1rem"><i class="fas fa-arrow-left"></i> Volver a empleos</a>
 

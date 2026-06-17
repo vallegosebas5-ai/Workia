@@ -129,11 +129,37 @@
         .job-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(26,86,219,.1); transform: translateY(-1px); }
         .job-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
 
+        /* Hamburger */
+        .navbar-toggle { display: none; background: none; border: none; cursor: pointer; padding: .4rem .5rem; color: var(--gray-700); font-size: 1.2rem; border-radius: 6px; }
+        .navbar-toggle:hover { background: var(--gray-100); }
+
         @media (max-width: 768px) {
+            .navbar { padding: 0 1rem; }
+            .navbar-toggle { display: block; }
+            .navbar-nav {
+                display: none;
+                position: fixed;
+                top: 64px; left: 0; right: 0;
+                background: #fff;
+                border-bottom: 1px solid var(--gray-200);
+                padding: .75rem;
+                flex-direction: column;
+                gap: .25rem;
+                z-index: 99;
+                box-shadow: 0 6px 16px rgba(0,0,0,.1);
+            }
+            .navbar-nav.open { display: flex; }
+            .navbar-nav li { width: 100%; }
+            .navbar-nav a { padding: .7rem 1rem; font-size: .95rem; display: flex; border-radius: 8px; }
+            .navbar-nav .btn-outline,
+            .navbar-nav .btn-primary { width: 100%; justify-content: center; }
+            .navbar-nav form { width: 100%; }
+            .navbar-nav form .btn { width: 100%; justify-content: center; }
             .panel-layout { grid-template-columns: 1fr; }
             .sidebar { display: none; }
             .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
-            .navbar { padding: 0 1rem; }
+            .job-grid { grid-template-columns: 1fr; }
+            .container { padding: 0 1rem; }
         }
     </style>
     @yield('styles')
@@ -141,7 +167,8 @@
 <body>
     <nav class="navbar">
         <a href="{{ route('home') }}" class="navbar-brand">Work<span>ia</span></a>
-        <ul class="navbar-nav">
+        <button class="navbar-toggle" id="navToggle" aria-label="Menú"><i class="fas fa-bars" id="navIcon"></i></button>
+        <ul class="navbar-nav" id="navMenu">
             <li><a href="{{ route('ofertas.index') }}"><i class="fas fa-briefcase"></i> Empleos</a></li>
             @auth
                 @if(auth()->user()->isAdmin())
@@ -192,5 +219,24 @@
         <div class="footer-bottom">&copy; {{ date('Y') }} Workia Bolivia. Todos los derechos reservados.</div>
     </footer>
     @yield('scripts')
+    <script>
+    (function(){
+        var t = document.getElementById('navToggle');
+        var m = document.getElementById('navMenu');
+        var i = document.getElementById('navIcon');
+        if (!t) return;
+        t.addEventListener('click', function(e){
+            e.stopPropagation();
+            var open = m.classList.toggle('open');
+            i.className = open ? 'fas fa-times' : 'fas fa-bars';
+        });
+        document.addEventListener('click', function(e){
+            if (!e.target.closest('nav.navbar')) {
+                m.classList.remove('open');
+                i.className = 'fas fa-bars';
+            }
+        });
+    })();
+    </script>
 </body>
 </html>

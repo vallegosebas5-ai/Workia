@@ -15,7 +15,32 @@
 .filter-group label { display:flex; align-items:center; gap:.5rem; padding:.3rem 0; cursor:pointer; font-size:.875rem; }
 .filter-group label:hover { color:#1a56db; }
 .no-results { text-align:center; padding:4rem 2rem; color:#6b7280; }
-@media(max-width:768px){ .results-area{grid-template-columns:1fr} .filter-sidebar{display:none} }
+.filter-toggle-btn { display:none; }
+.filter-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:199; }
+.filter-overlay.open { display:block; }
+.job-list-card { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:1rem; }
+@media(max-width:768px){
+    .results-area { grid-template-columns:1fr; gap:1rem; padding:1rem; }
+    .filter-sidebar {
+        display:block;
+        position:fixed;
+        left:0; top:0; bottom:0;
+        width:280px;
+        z-index:200;
+        transform:translateX(-100%);
+        transition:transform .28s cubic-bezier(.4,0,.2,1);
+        overflow-y:auto;
+        box-shadow:4px 0 20px rgba(0,0,0,.15);
+    }
+    .filter-sidebar.open { transform:translateX(0); }
+    .filter-toggle-btn { display:flex; align-items:center; gap:.5rem; }
+    .job-list-card { grid-template-columns:auto 1fr; }
+    .job-list-card .job-meta { grid-column:1/-1; display:flex; justify-content:space-between; align-items:center; padding-top:.5rem; border-top:1px solid #f3f4f6; }
+    .search-header { padding:1.5rem 1rem; }
+    .search-header h1 { font-size:1.35rem; }
+    .filters-row { flex-direction:column; gap:.5rem; }
+    .filters-row input, .filters-row select { width:100%; min-width:0 !important; }
+}
 </style>
 @endsection
 @section('content')
@@ -41,8 +66,9 @@
     </div>
 </div>
 
+<div class="filter-overlay" id="filterOverlay"></div>
 <div class="results-area">
-    <aside class="filter-sidebar">
+    <aside class="filter-sidebar" id="filterSidebar">
         <h3><i class="fas fa-filter"></i> Filtros</h3>
         <form method="GET" action="{{ route('ofertas.index') }}" id="filterForm">
             <input type="hidden" name="buscar" value="{{ request('buscar') }}">
@@ -78,13 +104,14 @@
     </aside>
 
     <div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
             <p style="color:#6b7280;font-size:.9rem"><strong>{{ $ofertas->total() }}</strong> ofertas encontradas</p>
+            <button class="btn btn-outline btn-sm filter-toggle-btn" id="filterToggle"><i class="fas fa-sliders-h"></i> Filtros</button>
         </div>
 
         @forelse($ofertas as $oferta)
         <a href="{{ route('ofertas.show', $oferta) }}" style="text-decoration:none;color:inherit;display:block;margin-bottom:1rem">
-            <div class="job-card" style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem">
+            <div class="job-card job-list-card">
                 @if($oferta->empresa->logo)
                     <img src="{{ Storage::url($oferta->empresa->logo) }}" alt="Logo" style="width:52px;height:52px;border-radius:10px;object-fit:cover;border:1px solid #e5e7eb">
                 @else
@@ -99,7 +126,7 @@
                         @if($oferta->modalidad !== 'presencial')<span class="badge badge-success">{{ ucfirst($oferta->modalidad) }}</span>@endif
                     </div>
                 </div>
-                <div style="text-align:right;flex-shrink:0">
+                <div class="job-meta" style="text-align:right;flex-shrink:0">
                     @if($oferta->salario_min)
                         <div style="color:#0e9f6e;font-weight:700;font-size:.95rem">Bs. {{ number_format($oferta->salario_min,0) }}+</div>
                     @endif
@@ -124,4 +151,22 @@
         {{ $ofertas->links('partials.pagination') }}
     </div>
 </div>
+@endsection
+@section('scripts')
+<script>
+(function(){
+    var btn     = document.getElementById('filterToggle');
+    var sidebar = document.getElementById('filterSidebar');
+    var overlay = document.getElementById('filterOverlay');
+    if (!btn) return;
+    btn.addEventListener('click', function(){
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+    });
+    overlay.addEventListener('click', function(){
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+    });
+})();
+</script>
 @endsection

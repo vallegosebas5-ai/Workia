@@ -112,6 +112,7 @@
 }
 .btn-register:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(14,159,110,.35); }
 .btn-register:active { transform:translateY(0); }
+@media(max-width:480px) { .auth-bg { padding:1rem; } .form-row-2 { grid-template-columns:1fr !important; } }
 </style>
 @endsection
 @section('content')
@@ -175,7 +176,7 @@
                     </div>
                 </div>
 
-                <div class="form-field-3" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                <div class="form-field-3 form-row-2" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
                     <div class="form-group">
                         <label class="form-label">Teléfono</label>
                         <div class="input-wrap">

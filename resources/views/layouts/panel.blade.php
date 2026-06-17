@@ -61,12 +61,39 @@
         .stat-value { font-size: 1.75rem; font-weight: 800; } .stat-label { font-size: .8rem; color: var(--gray-500); margin-top: .2rem; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
-        @media(max-width:768px) { .layout{grid-template-columns:1fr} .sidebar{display:none} .grid-2,.grid-3{grid-template-columns:1fr} }
+
+        /* Mobile sidebar drawer */
+        .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:199; }
+        .sidebar-overlay.open { display:block; }
+        .topbar-toggle { display:none; background:none; border:none; cursor:pointer; padding:.4rem .5rem; color:var(--gray-700); font-size:1.2rem; border-radius:6px; margin-right:.5rem; }
+        .topbar-toggle:hover { background:var(--gray-100); }
+
+        @media(max-width:768px) {
+            .layout { grid-template-columns:1fr; }
+            .sidebar {
+                display:block;
+                position:fixed;
+                left:-220px; top:0; bottom:0;
+                width:220px;
+                z-index:200;
+                transition:left .28s cubic-bezier(.4,0,.2,1);
+                overflow-y:auto;
+                box-shadow:4px 0 20px rgba(0,0,0,.15);
+            }
+            .sidebar.open { left:0; }
+            .grid-2, .grid-3 { grid-template-columns:1fr; }
+            .topbar-toggle { display:inline-flex; align-items:center; }
+            .topbar { padding:0 1rem; gap:.5rem; }
+            .topbar-user { display:none; }
+            .content { padding:1.25rem 1rem; }
+            .page-header { flex-direction:column; align-items:flex-start; }
+        }
     </style>
     @yield('styles')
 </head>
 <body>
 <header class="topbar">
+    <button class="topbar-toggle" id="sidebarToggle" aria-label="Menú"><i class="fas fa-bars"></i></button>
     <a href="{{ route('home') }}" class="topbar-brand">Work<span>ia</span></a>
     <div class="topbar-right">
         <span class="topbar-user"><i class="fas fa-user-circle" style="color:#1a56db"></i> {{ auth()->user()->name }}</span>
@@ -78,8 +105,9 @@
     </div>
 </header>
 
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 <div class="layout">
-    <aside class="sidebar">
+    <aside class="sidebar" id="panelSidebar">
         <ul class="sidebar-nav">
             @yield('sidebar-links')
         </ul>
@@ -98,5 +126,21 @@
     </main>
 </div>
 @yield('scripts')
+<script>
+(function(){
+    var toggle  = document.getElementById('sidebarToggle');
+    var sidebar = document.getElementById('panelSidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    if (!toggle) return;
+    toggle.addEventListener('click', function(){
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+    });
+    overlay.addEventListener('click', function(){
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+    });
+})();
+</script>
 </body>
 </html>
