@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 APP_KEY_VALUE="${APP_KEY:-base64:KmV61al/MolDhFgOBnMFcjlUvS+pZXC2vChZetbS4Yc=}"
 
@@ -9,6 +8,9 @@ DB_PORT_VALUE="${MYSQL_PORT:-${DB_PORT:-3306}}"
 DB_DATABASE_VALUE="${MYSQL_DATABASE:-${DB_DATABASE:-workia}}"
 DB_USERNAME_VALUE="${MYSQL_USER:-${DB_USERNAME:-root}}"
 DB_PASSWORD_VALUE="${MYSQL_PASSWORD:-${DB_PASSWORD}}"
+
+echo "=== DB CONFIG ==="
+echo "HOST: ${DB_HOST_VALUE} PORT: ${DB_PORT_VALUE} DB: ${DB_DATABASE_VALUE} USER: ${DB_USERNAME_VALUE}"
 
 cat > /app/.env << EOF
 APP_NAME=Workia
@@ -42,9 +44,9 @@ FILESYSTEM_DISK=local
 BROADCAST_CONNECTION=log
 EOF
 
-php artisan route:cache
-php artisan view:cache
-php artisan migrate --force
-php artisan db:seed --class=DatabaseSeeder --force
-php artisan storage:link --force
+php artisan route:cache || echo "WARN: route:cache failed"
+php artisan view:cache || echo "WARN: view:cache failed"
+php artisan migrate --force || echo "WARN: migrate failed"
+php artisan db:seed --class=DatabaseSeeder --force || echo "WARN: seed failed"
+php artisan storage:link --force || echo "WARN: storage:link failed"
 exec php artisan serve --host=0.0.0.0 --port=8080
