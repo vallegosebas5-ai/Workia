@@ -16,7 +16,7 @@ cat > /app/.env << EOF
 APP_NAME=Workia
 APP_ENV=production
 APP_KEY=${APP_KEY_VALUE}
-APP_DEBUG=false
+APP_DEBUG=${APP_DEBUG:-false}
 APP_URL=${APP_URL:-http://localhost:8080}
 APP_LOCALE=es
 APP_FALLBACK_LOCALE=es
