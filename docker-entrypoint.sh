@@ -1,10 +1,12 @@
 #!/bin/bash
 set -e
 
+APP_KEY_VALUE="${APP_KEY:-base64:KmV61al/MolDhFgOBnMFcjlUvS+pZXC2vChZetbS4Yc=}"
+
 cat > /app/.env << EOF
 APP_NAME=${APP_NAME:-Workia}
 APP_ENV=${APP_ENV:-production}
-APP_KEY=${APP_KEY}
+APP_KEY=${APP_KEY_VALUE}
 APP_DEBUG=${APP_DEBUG:-false}
 APP_URL=${APP_URL:-http://localhost:8080}
 APP_LOCALE=${APP_LOCALE:-es}
