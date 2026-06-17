@@ -8,6 +8,15 @@ DB_DATABASE_VALUE="${DB_DATABASE:-workia}"
 DB_USERNAME_VALUE="${DB_USERNAME:-root}"
 DB_PASSWORD_VALUE="${DB_PASSWORD}"
 
+# Force correct DB vars in OS environment so Laravel's createImmutable() dotenv uses mysql
+export DB_CONNECTION=mysql
+export DB_HOST="${DB_HOST_VALUE}"
+export DB_PORT="${DB_PORT_VALUE}"
+export DB_DATABASE="${DB_DATABASE_VALUE}"
+export DB_USERNAME="${DB_USERNAME_VALUE}"
+export DB_PASSWORD="${DB_PASSWORD_VALUE}"
+export APP_KEY="${APP_KEY_VALUE}"
+
 echo "=== DB CONFIG ==="
 echo "HOST: ${DB_HOST_VALUE} PORT: ${DB_PORT_VALUE} DB: ${DB_DATABASE_VALUE} USER: ${DB_USERNAME_VALUE}"
 
