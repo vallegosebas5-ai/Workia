@@ -17,12 +17,9 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 EXPOSE 8080
 
-CMD php artisan config:clear \
-    && php artisan route:cache \
-    && php artisan view:cache \
-    && php artisan migrate --force \
-    && php artisan db:seed --class=DatabaseSeeder --force \
-    && php artisan storage:link --force \
-    && php artisan serve --host=0.0.0.0 --port=8080
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
